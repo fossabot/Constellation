@@ -1,0 +1,24 @@
+{
+    "rules": {
+        "indent": [
+            2,
+            "tab"
+        ],
+        "import/no-extraneous-dependencies": [
+            "error",
+            {
+                "devDependencies": true,
+                "optionalDependencies": false
+            }
+        ]
+    },
+    "env": {
+        "node": true,
+        "mocha": true,
+        "es6": true
+    },
+    "parserOptions": {
+        "sourceType": "script"
+    },
+    "extends": "airbnb-base"
+}
