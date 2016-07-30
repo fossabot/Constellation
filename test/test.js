@@ -13,6 +13,18 @@ describe('Constellation library', () => {
 		constellation = new Constellation({
 			serverAddress: 'ws://127.0.0.1:3030',
 			autoReconnect: false,
+			authorization: 'auth',
+			cookie: 'cookie',
+		});
+	});
+
+	it('sends authentication headers', done => {
+		wss.once('connection', con => {
+			const headers = con.upgradeReq.headers;
+			expect(headers.cookie).to.equal('cookie');
+			expect(headers.authorization).to.equal('auth');
+			expect(headers['x-is-bot']).to.equal('true');
+			done();
 		});
 	});
 
