@@ -2,11 +2,15 @@
 
 [![Build Status](https://travis-ci.org/StreamJar/Constellation.svg?branch=master)](https://travis-ci.org/StreamJar/Constellation) [![Coverage Status](https://coveralls.io/repos/github/StreamJar/Constellation/badge.svg?branch=master)](https://coveralls.io/github/StreamJar/Constellation?branch=master)
 
-This is a **work in progress** client for the upcoming Beam Constellation service, which replaces the existing Beam Liveloading system.
+This is a client for the Beam Constellation service, which replaces the Beam Liveloading system. You can use it to easily listen for Beam events from Node.
 
-Since Constellation itself has not yet been released (as of writing), this library is currently based on [a public specification of the protocol](https://dev.beam.pro/reference/liveloading/constellation.pdf), and it will be revised once Constellation is released for public use. Consequently, at this stage, there is no guarantee it will work correctly.
+This library is based on [a public specification of the protocol](https://dev.beam.pro/reference/liveloading/constellation.pdf).
 
-Regardless of this early stage, anticipated usage information has been included below.
+## Installation
+
+```
+npm install --save constellation-client
+```
 
 ## Usage
 

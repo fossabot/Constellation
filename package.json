@@ -1,6 +1,6 @@
 {
   "name": "constellation-client",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "Client for Beam Constellation",
   "main": "index.js",
   "scripts": {
