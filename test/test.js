@@ -227,4 +227,29 @@ describe('Constellation library', () => {
 		subs.addSubscription('event');
 		expect(subs.subscriptions).to.have.length(1);
 	});
+
+	it('overrides start/stop streaming events', done => {
+		wss.once('connection', con => {
+			con.send(JSON.stringify({ type: 'event', event: 'hello', data: { authenticated: false } }));
+			con.once('message', message => {
+				expect(JSON.parse(message).params.events).to.deep.equal(['channel:1:update'])
+				con.send(JSON.stringify({
+					type: 'event',
+					event: 'live',
+					data: {
+						channel: 'chat:1:StartStreaming',
+						payload: {
+							online: true,
+						},
+					},
+				}));
+			});
+		});
+		constellation.on('connected', () => {
+			constellation.on('chat:1:StartStreaming', message => {
+				expect(message).to.deep.equal({ online: true });
+				done();
+			});
+		});
+	});
 });
