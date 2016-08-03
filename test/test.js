@@ -120,7 +120,7 @@ describe('Constellation library', () => {
 		wss.once('connection', con => {
 			con.send(JSON.stringify({ type: 'event', event: 'hello', data: { authenticated: false } }));
 			con.once('message', message => {
-				expect(JSON.parse(message).params.events).to.deep.equal(['channel:1:update'])
+				expect(JSON.parse(message).params.events).to.deep.equal(['channel:1:status'])
 				con.send(JSON.stringify({
 					type: 'event',
 					event: 'live',
