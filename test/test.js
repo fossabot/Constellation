@@ -231,6 +231,15 @@ describe('Constellation library', () => {
 		});
 	});
 
+	it('reconnects on bad status code', done => {
+		constellation.opts.autoReconnect = true;
+		constellation.opts.reconnectTime = 1;
+		constellation.socket.socket.once('close', () => {
+			done();
+		});
+		constellation.socket.socket.emit('unexpected-response');
+	});
+
 	it('prevents the identifier overflowing', () => {
 		constellation.socket.id = 4294967295;
 		expect(constellation.socket.getMessageId()).to.equal(1);
