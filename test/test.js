@@ -247,7 +247,7 @@ describe('Constellation library', () => {
 
 	it('defaults server address if undefined', () => {
 		const socket = new Socket();
-		expect(socket.serverAddress).to.equal('wss://constellation.beam.pro');
+		expect(socket.serverAddress).to.equal('wss://constellation.mixer.com');
 	});
 
 	it('does not error if an unknown message is received', () => {

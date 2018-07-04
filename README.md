@@ -54,7 +54,7 @@ All possible options are:
 - `autoConnect` - Whether the client should automatically connect to the server. Defaults to `true`.
 - `autoReconnect` - Whether the client should automatically reconnect on disconnection. Defaults to `true`.
 - `reconnectTime` - The number of milliseconds to wait before a reconnection attempt. Defaults to `8000`.
-- `serverAddress` - The address that the client should connect to. Defaults to `wss://constellation.beam.pro`
+- `serverAddress` - The address that the client should connect to. Defaults to `wss://constellation.mixer.com`
 - `authorization` - The OAuth Bearer token to authenticate with, if necessary.
 - `cookie` - The Beam session cookie to authenticate with, if necessary.
 
