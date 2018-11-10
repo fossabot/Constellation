@@ -261,4 +261,50 @@ describe('Constellation library', () => {
 		subs.addSubscription('event');
 		expect(subs.subscriptions).to.have.length(1);
 	});
+
+
+	it('handles ws throwing an error', done => {
+		let conn;
+
+		// We have to quickly patch .close to ignore unsafe error codes.
+		// normally this would be bad, but we're actually testing this!
+		wss.on('connection', con => {
+			conn = con;
+			con.send(JSON.stringify({ type: 'event', event: 'hello', data: { authenticated: false } }));
+		});
+
+		constellation.opts.autoReconnect = true;
+		constellation.opts.reconnectTime = 1;
+		
+		constellation.once('connected', () => {
+			conn._sender.close_ = conn._sender.close;
+			conn._sender.close = unsafeCloseWs.bind(conn._sender);
+			conn.close(9999, 'To break something');
+			conn._sender.close = conn._sender.close_;
+
+			constellation.once('error', () => {
+				constellation.once('connected', () => done());
+			})
+		});
+	})
 });
+
+// https://github.com/websockets/ws/blob/1.1.5/lib/Sender.js#L46r/lib/sender.js#L120
+function unsafeCloseWs(code, data, mask, cb) {
+	code = code || 1000;
+	var dataBuffer = new Buffer(2 + (data ? Buffer.byteLength(data) : 0));
+	writeUInt16BE.call(dataBuffer, code, 0);
+	if (dataBuffer.length > 2) dataBuffer.write(data, 2);
+  
+	var self = this;
+	this.messageHandlers.push(function() {
+	  self.frameAndSend(0x8, dataBuffer, true, mask);
+	  if (typeof cb == 'function') cb();
+	});
+	this.flush();
+}
+
+function writeUInt16BE(value, offset) {
+	this[offset] = (value & 0xff00)>>8;
+	this[offset+1] = value & 0xff;
+  }
