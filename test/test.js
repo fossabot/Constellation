@@ -19,8 +19,8 @@ describe('Constellation library', () => {
 	});
 
 	it('sends authentication headers', done => {
-		wss.once('connection', con => {
-			const headers = con.upgradeReq.headers;
+		wss.once('connection', (_, con) => {
+			const headers = con.headers;
 			expect(headers.cookie).to.equal('cookie');
 			expect(headers.authorization).to.equal('auth');
 			expect(headers['x-is-bot']).to.equal('true');
@@ -289,22 +289,25 @@ describe('Constellation library', () => {
 	})
 });
 
-// https://github.com/websockets/ws/blob/1.1.5/lib/Sender.js#L46r/lib/sender.js#L120
+// Same as normal, without status sanity checking
+// https://github.com/websockets/ws/blob/master/lib/sender.js#120
 function unsafeCloseWs(code, data, mask, cb) {
-	code = code || 1000;
-	var dataBuffer = new Buffer(2 + (data ? Buffer.byteLength(data) : 0));
-	writeUInt16BE.call(dataBuffer, code, 0);
-	if (dataBuffer.length > 2) dataBuffer.write(data, 2);
-  
-	var self = this;
-	this.messageHandlers.push(function() {
-	  self.frameAndSend(0x8, dataBuffer, true, mask);
-	  if (typeof cb == 'function') cb();
-	});
-	this.flush();
-}
+    var buf;
 
-function writeUInt16BE(value, offset) {
-	this[offset] = (value & 0xff00)>>8;
-	this[offset+1] = value & 0xff;
-  }
+    if (code === undefined) {
+      buf = constants.EMPTY_BUFFER;
+    } else if (data === undefined || data === '') {
+      buf = Buffer.allocUnsafe(2);
+      buf.writeUInt16BE(code, 0);
+    } else {
+      buf = Buffer.allocUnsafe(2 + Buffer.byteLength(data));
+      buf.writeUInt16BE(code, 0);
+      buf.write(data, 2);
+    }
+
+    if (this._deflating) {
+      this.enqueue([this.doClose, buf, mask, cb]);
+    } else {
+      this.doClose(buf, mask, cb);
+	}
+}
