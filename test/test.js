@@ -19,8 +19,8 @@ describe('Constellation library', () => {
 	});
 
 	it('sends authentication headers', done => {
-		wss.once('connection', con => {
-			const headers = con.upgradeReq.headers;
+		wss.once('connection', (_, con) => {
+			const headers = con.headers;
 			expect(headers.cookie).to.equal('cookie');
 			expect(headers.authorization).to.equal('auth');
 			expect(headers['x-is-bot']).to.equal('true');
@@ -261,4 +261,53 @@ describe('Constellation library', () => {
 		subs.addSubscription('event');
 		expect(subs.subscriptions).to.have.length(1);
 	});
+
+
+	it('handles ws throwing an error', done => {
+		let conn;
+
+		// We have to quickly patch .close to ignore unsafe error codes.
+		// normally this would be bad, but we're actually testing this!
+		wss.on('connection', con => {
+			conn = con;
+			con.send(JSON.stringify({ type: 'event', event: 'hello', data: { authenticated: false } }));
+		});
+
+		constellation.opts.autoReconnect = true;
+		constellation.opts.reconnectTime = 1;
+		
+		constellation.once('connected', () => {
+			conn._sender.close_ = conn._sender.close;
+			conn._sender.close = unsafeCloseWs.bind(conn._sender);
+			conn.close(9999, 'To break something');
+			conn._sender.close = conn._sender.close_;
+
+			constellation.once('error', () => {
+				constellation.once('connected', () => done());
+			})
+		});
+	})
 });
+
+// Same as normal, without status sanity checking
+// https://github.com/websockets/ws/blob/master/lib/sender.js#120
+function unsafeCloseWs(code, data, mask, cb) {
+    var buf;
+
+    if (code === undefined) {
+      buf = constants.EMPTY_BUFFER;
+    } else if (data === undefined || data === '') {
+      buf = Buffer.allocUnsafe(2);
+      buf.writeUInt16BE(code, 0);
+    } else {
+      buf = Buffer.allocUnsafe(2 + Buffer.byteLength(data));
+      buf.writeUInt16BE(code, 0);
+      buf.write(data, 2);
+    }
+
+    if (this._deflating) {
+      this.enqueue([this.doClose, buf, mask, cb]);
+    } else {
+      this.doClose(buf, mask, cb);
+	}
+}
