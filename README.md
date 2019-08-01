@@ -1,6 +1,7 @@
 # Constellation
 
-[![Build Status](https://travis-ci.org/StreamJar/Constellation.svg?branch=master)](https://travis-ci.org/StreamJar/Constellation) [![Coverage Status](https://coveralls.io/repos/github/StreamJar/Constellation/badge.svg?branch=master)](https://coveralls.io/github/StreamJar/Constellation?branch=master)
+[![Build Status](https://travis-ci.org/StreamJar/Constellation.svg?branch=master)](https://travis-ci.org/StreamJar/Constellation) [![Coverage Status](https://coveralls.io/repos/github/StreamJar/Constellation/badge.svg?branch=master)](https://coveralls.io/github/StreamJar/Constellation?branch=master)[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2FStreamJar%2FConstellation.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2FStreamJar%2FConstellation?ref=badge_shield)
+
 
 This is a client for the Beam Constellation service, which replaces the Beam Liveloading system. You can use it to easily listen for Beam events from Node.
 
@@ -64,3 +65,6 @@ Reserved events (that will not get passed through to Constellation when listenin
 - `disconnected`
 - `reconnecting`
 - `error`
+
+## License
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2FStreamJar%2FConstellation.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2FStreamJar%2FConstellation?ref=badge_large)
